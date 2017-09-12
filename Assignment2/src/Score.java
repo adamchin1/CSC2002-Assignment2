@@ -1,9 +1,7 @@
-package skeletonCodeAssgnmt2;
-
 public class Score {
-	private int missedWords;
-	private int caughtWords;
-	private int gameScore;
+	public int missedWords;
+	public int caughtWords;
+	public int gameScore;
 	
 	Score() {
 		missedWords=0;

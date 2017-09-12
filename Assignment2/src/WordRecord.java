@@ -1,4 +1,3 @@
-package skeletonCodeAssgnmt2;
 
 public class WordRecord {
 	private String text;
@@ -73,7 +72,7 @@ public class WordRecord {
 		setX(x);
 	}
 	public synchronized void resetPos() {
-		setY(0);
+		setY(-10);
 	}
 
 	public synchronized void resetWord() {
@@ -89,6 +88,7 @@ public class WordRecord {
 		//System.out.println("Matching against: "+text);
 		if (typedText.equals(this.text)) {
 			resetWord();
+                        
 			return true;
 		}
 		else
