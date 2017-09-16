@@ -14,7 +14,10 @@ public class WordPanel extends JPanel implements Runnable {
     private WordApp wa;
     private int noWords;
     private int maxY;
-
+    private int[] values = new int[noWords];
+    int i =0;
+    Random r = new Random();
+    
     public void paintComponent(Graphics g) {
         int width = getWidth();
         int height = getHeight();
@@ -27,7 +30,7 @@ public class WordPanel extends JPanel implements Runnable {
         //draw the words
         //animation must be added 
         for (int i = 0; i < noWords; i++) {
-            g.drawString(words[i].getWord(), words[i].getX(), words[i].getY() +20);
+            g.drawString(words[i].getWord(), words[i].getX(), words[i].getY()-5);
         }
 
     }
@@ -40,12 +43,19 @@ public class WordPanel extends JPanel implements Runnable {
     }
 
     public void run() {
+
+      int i = r.nextInt(1000000);
+       i = i%noWords;
         
-        Random r = new Random();
-        int i = r.nextInt(noWords);
+        if (wa.done == true){
+            for (int j = 0; j < noWords; j++) {
+                words[j].resetWord();     
+            }
+        }
         
+
         int length = words[i].getWord().length();
-        while (true) {
+        while (wa.done ==false) {
 
             if (words[i].getY() > maxY-5) {
                 
@@ -60,15 +70,15 @@ public class WordPanel extends JPanel implements Runnable {
 
             
 
-            words[i].drop(4);
+            words[i].drop(5);
             repaint();
             try {
-                Thread.sleep(words[i].getSpeed()/2);
+                Thread.sleep(words[i].getSpeed());
             } catch (InterruptedException ex) {
                 Logger.getLogger(WordPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
-
+        
     }
 }

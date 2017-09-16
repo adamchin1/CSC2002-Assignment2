@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import java.util.Scanner;
 import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //model is separate from the view.
 
 public class WordApp {
@@ -25,16 +27,17 @@ public class WordApp {
 
     static WordRecord[] words;
     static volatile boolean done;  //must be volatile
+
     static Score score = new Score();
     static WordPanel w;
-    static boolean started = false;
+    static volatile boolean started = false;
     static String fieldText = "";
     static JLabel caught;
     static JLabel missed;
     static JLabel scr;
 
     public static void updateGUI() {
-        System.out.println(score.getCaught());
+
         caught.setText("Caught: " + score.getCaught() + "    ");
         missed.setText("Missed:" + score.getMissed() + "    ");
         scr.setText("Score:" + score.getScore() + "    ");
@@ -87,16 +90,16 @@ public class WordApp {
         // add the listener to the jbutton to handle the "pressed" event
         startB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                done = false;
 
-                if (started == false) {
-                    started = true;
-                    System.out.println("Start Clicked");
+                if (done == false) {
+                                     
                     for (int i = 0; i < noWords; i++) {
                         Thread t = new Thread(w);
                         t.start();
                         textEntry.requestFocus();
                     }
-                    System.out.println(Thread.activeCount());
+          
                 }
                 //return focus to the text entry field
             }
@@ -106,7 +109,8 @@ public class WordApp {
         // add the listener to the jbutton to handle the "pressed" event
         endB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //[snip]
+                done = true;
+
             }
         });
         JButton quitB = new JButton("Quit");
