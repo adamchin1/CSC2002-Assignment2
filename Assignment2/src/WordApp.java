@@ -27,14 +27,17 @@ public class WordApp {
 
     static WordRecord[] words;
     static volatile boolean done;  //must be volatile
-
+    static volatile boolean pushed;
     static Score score = new Score();
     static WordPanel w;
-    static volatile boolean started = false;
+
     static String fieldText = "";
     static JLabel caught;
     static JLabel missed;
     static JLabel scr;
+    static JComboBox<String> cb;
+    static int startClicked = 0;
+    static int difficulty;
 
     public static void updateGUI() {
 
@@ -42,6 +45,32 @@ public class WordApp {
         missed.setText("Missed:" + score.getMissed() + "    ");
         scr.setText("Score:" + score.getScore() + "    ");
 
+    }
+
+    public static void resetAll(WordRecord[] words) {
+        for (int i = 0; i < noWords; i++) {
+            words[i].resetWord();
+
+        }
+
+    }
+
+    public static int getDifficulty(JComboBox<String> cb) {
+        switch (cb.getSelectedItem().toString()) {
+
+            case "Easy":
+                return 1;
+
+            case "Medium":
+                return 2;
+
+            case "Hard":
+                return 3;
+                
+            default:
+                return 100;
+
+        }
     }
 
     public static void setupGUI(int frameX, int frameY, int yLimit) {
@@ -72,6 +101,7 @@ public class WordApp {
         final JTextField textEntry = new JTextField("", 20);
         textEntry.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+
                 String text = textEntry.getText();
                 fieldText = text;
                 textEntry.setText("");
@@ -81,6 +111,13 @@ public class WordApp {
 
         txt.add(textEntry);
         txt.setMaximumSize(txt.getPreferredSize());
+
+        String[] choices = {"Easy", "Medium", "Hard"};
+
+         cb = new JComboBox<String>(choices);
+
+        cb.setVisible(true);
+        txt.add(cb);
         g.add(txt);
 
         JPanel b = new JPanel();
@@ -90,16 +127,18 @@ public class WordApp {
         // add the listener to the jbutton to handle the "pressed" event
         startB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                startClicked++;
                 done = false;
-
+                cb.setEditable(false);
                 if (done == false) {
-                                     
-                    for (int i = 0; i < noWords; i++) {
-                        Thread t = new Thread(w);
-                        t.start();
-                        textEntry.requestFocus();
+                    if (startClicked == 1) {
+                        for (int i = 0; i < noWords; i++) {
+                            Thread t = new Thread(w);
+                            t.start();
+                            textEntry.requestFocus();
+                        }
                     }
-          
+
                 }
                 //return focus to the text entry field
             }
@@ -110,6 +149,11 @@ public class WordApp {
         endB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 done = true;
+                startClicked = 0;
+                cb.setEnabled(true);
+                resetAll(w.words);
+                
+                w.repaint();
 
             }
         });

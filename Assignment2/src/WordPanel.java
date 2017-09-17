@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 public class WordPanel extends JPanel implements Runnable {
 
     public static volatile boolean done;
-    private WordRecord[] words;
+    public WordRecord[] words;
     private WordApp wa;
     private int noWords;
     private int maxY;
@@ -46,17 +46,11 @@ public class WordPanel extends JPanel implements Runnable {
 
       int i = r.nextInt(1000000);
        i = i%noWords;
+           
         
-        if (wa.done == true){
-            for (int j = 0; j < noWords; j++) {
-                words[j].resetWord();     
-            }
-        }
-        
-
         int length = words[i].getWord().length();
         while (wa.done ==false) {
-
+            wa.cb.setEnabled(false);
             if (words[i].getY() > maxY-5) {
                 
                 wa.score.missedWord();
@@ -70,10 +64,11 @@ public class WordPanel extends JPanel implements Runnable {
 
             
 
-            words[i].drop(5);
+            words[i].drop(wa.getDifficulty(wa.cb));
+            
             repaint();
             try {
-                Thread.sleep(words[i].getSpeed());
+                Thread.sleep(words[i].getSpeed()/wa.getDifficulty(wa.cb));
             } catch (InterruptedException ex) {
                 Logger.getLogger(WordPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
